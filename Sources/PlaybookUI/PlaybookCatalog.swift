@@ -90,8 +90,7 @@ private extension PlaybookCatalogInternal {
                 )
                 .edgesIgnoringSafeArea(.all)
             )
-        }
-        else {
+        } else {
             return AnyView(emptyContent())
         }
     }
@@ -133,51 +132,8 @@ private extension PlaybookCatalogInternal {
 
                 Divider()
                     .edgesIgnoringSafeArea(.all)
-
-                bottomBar(firstBarItem: firstBarItem)
             }
         }
-    }
-
-    func bottomBar(firstBarItem: CatalogBarItem) -> some View {
-        HStack(spacing: 24) {
-            firstBarItem
-
-            if store.selectedScenario != nil {
-                CatalogBarItem(
-                    image: Image(symbol: .squareAndArrowUp),
-                    insets: .only(bottom: 4),
-                    action: share
-                )
-            }
-
-            HStack(spacing: 0) {
-                Spacer(minLength: 0)
-
-                Text(name)
-                    .bold()
-                    .lineLimit(1)
-                    .font(.system(size: 24))
-            }
-        }
-        .padding(.horizontal, 24)
-        .frame(height: bottomBarHeight)
-        .background(
-            Blur(style: .systemMaterial)
-                .scaledToFill()
-                .edgesIgnoringSafeArea(.all),
-            alignment: .topLeading
-        )
-    }
-
-    func share() {
-        guard let uiView = contentUIView else { return }
-
-        let image = UIGraphicsImageRenderer(bounds: uiView.bounds).image { _ in
-            uiView.drawHierarchy(in: uiView.bounds, afterScreenUpdates: true)
-        }
-
-        store.shareItem = ImageSharingView.Item(image: image)
     }
 
     func selectFirstScenario() {

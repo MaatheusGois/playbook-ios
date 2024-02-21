@@ -112,78 +112,75 @@ private extension SnapshotSupport {
             if let keyWindow = keyWindow {
                 keyWindow.addSubview(window)
                 isEmbedInKeyWindow = true
-            }
-            else {
+            } else {
                 isEmbedInKeyWindow = false
             }
 
-            window.prepareForSnapshot {
-                if contentView.bounds.size.width <= 0 {
-                    fatalError("The view was laid out with zero width in scenario - \(scenario.name)", file: scenario.file, line: scenario.line)
-                }
+            DispatchQueue.main.asyncAfter(deadline: .now() + scenario.delay) {
+                window.prepareForSnapshot {
+                    if contentView.bounds.size.width <= 0 {
+                        fatalError("The view was laid out with zero width in scenario - \(scenario.name)", file: scenario.file, line: scenario.line)
+                    }
 
-                if contentView.bounds.size.height <= 0 {
-                    fatalError("The view was laid out with zero height in scenario - \(scenario.name)", file: scenario.file, line: scenario.line)
-                }
+                    if contentView.bounds.size.height <= 0 {
+                        fatalError("The view was laid out with zero height in scenario - \(scenario.name)", file: scenario.file, line: scenario.line)
+                    }
 
-                let format = UIGraphicsImageRendererFormat(for: device.traitCollection)
-                format.scale = scale
+                    let format = UIGraphicsImageRendererFormat(for: device.traitCollection)
+                    format.scale = scale
 
-                if #available(iOS 12.0, *) {
-                    format.preferredRange = .standard
-                }
-                else {
-                    format.prefersExtendedRange = false
-                }
+                    if #available(iOS 12.0, *) {
+                        format.preferredRange = .standard
+                    } else {
+                        format.prefersExtendedRange = false
+                    }
 
-                var snapshotView: UIView
+                    var snapshotView: UIView
 
-                if let viewPreprocessor = viewPreprocessor {
-                    snapshotView = viewPreprocessor(contentView)
-                }
-                else {
-                    snapshotView = contentView
-                }
+                    if let viewPreprocessor = viewPreprocessor {
+                        snapshotView = viewPreprocessor(contentView)
+                    } else {
+                        snapshotView = contentView
+                    }
 
-                let renderer = UIGraphicsImageRenderer(bounds: snapshotView.bounds, format: format)
-                let actions: UIGraphicsDrawingActions = { context in
-                    withoutAnimation {
-                        if isEmbedInKeyWindow {
-                            let nativeScale = UIScreen.main.nativeScale
-                            let size = snapshotView.bounds.size
-                            let nativeScaledSize = CGSize(
-                                width: size.width * nativeScale,
-                                height: size.height * nativeScale
-                            )
-                            let sizeLimit: CGFloat = 8192
-                            let limitedScale = max(nativeScaledSize.width / sizeLimit, nativeScaledSize.height / sizeLimit)
-
-                            if limitedScale > 1 {
-                                // `UIView.drawHierarchy` seems to have an internal hard-coded limit size of 8192x8192,
-                                // and specifying a size beyond that resulting in an empty image is drawn.
-                                let limitedRect = CGRect(
-                                    x: .zero,
-                                    y: .zero,
-                                    width: size.width / limitedScale,
-                                    height: size.height / limitedScale
+                    let renderer = UIGraphicsImageRenderer(bounds: snapshotView.bounds, format: format)
+                    let actions: UIGraphicsDrawingActions = { context in
+                        withoutAnimation {
+                            if isEmbedInKeyWindow {
+                                let nativeScale = UIScreen.main.nativeScale
+                                let size = snapshotView.bounds.size
+                                let nativeScaledSize = CGSize(
+                                    width: size.width * nativeScale,
+                                    height: size.height * nativeScale
                                 )
-                                context.cgContext.scaleBy(x: limitedScale, y: limitedScale)
-                                snapshotView.drawHierarchy(in: limitedRect, afterScreenUpdates: true)
-                            }
-                            else {
-                                snapshotView.drawHierarchy(in: snapshotView.bounds, afterScreenUpdates: true)
-                            }
+                                let sizeLimit: CGFloat = 8192
+                                let limitedScale = max(nativeScaledSize.width / sizeLimit, nativeScaledSize.height / sizeLimit)
 
-                            snapshotView.removeFromSuperview()
-                        }
-                        else {
-                            snapshotView.layer.render(in: context.cgContext)
+                                if limitedScale > 1 {
+                                    // `UIView.drawHierarchy` seems to have an internal hard-coded limit size of 8192x8192,
+                                    // and specifying a size beyond that resulting in an empty image is drawn.
+                                    let limitedRect = CGRect(
+                                        x: .zero,
+                                        y: .zero,
+                                        width: size.width / limitedScale,
+                                        height: size.height / limitedScale
+                                    )
+                                    context.cgContext.scaleBy(x: limitedScale, y: limitedScale)
+                                    snapshotView.drawHierarchy(in: limitedRect, afterScreenUpdates: true)
+                                } else {
+                                    snapshotView.drawHierarchy(in: snapshotView.bounds, afterScreenUpdates: true)
+                                }
+
+                                snapshotView.removeFromSuperview()
+                            } else {
+                                snapshotView.layer.render(in: context.cgContext)
+                            }
                         }
                     }
-                }
 
-                let resource = Resource(renderer: renderer, actions: actions)
-                completion(resource)
+                    let resource = Resource(renderer: renderer, actions: actions)
+                    completion(resource)
+                }
             }
         }
     }

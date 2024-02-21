@@ -18,13 +18,31 @@ internal class ScenarioSearchStore: ObservableObject {
 
     @discardableResult
     func start(with searchText: String? = nil) -> Self {
-        self.searchText = searchText
+        if searchText == nil {
+            loadState()
+        } else {
+            self.searchText = searchText
+        }
+
         return self
+    }
+
+    // MARK: - UserDefaults
+
+    private let searchTextKey = "scenarioSearchStoreSearchText"
+
+    func saveState() {
+        UserDefaults.standard.set(searchText, forKey: searchTextKey)
+    }
+
+    func loadState() {
+        searchText = UserDefaults.standard.string(forKey: searchTextKey)
     }
 }
 
 private extension ScenarioSearchStore {
     func search(_ query: String?) {
+        saveState()
         let query = query?.lowercased() ?? ""
 
         func isMatched(_ string: String) -> Bool {
@@ -47,8 +65,7 @@ private extension ScenarioSearchStore {
                     }
                 )
             }
-        }
-        else {
+        } else {
             data = playbook.stores.compactMap { store in
                 if isMatched(store.kind.rawValue) {
                     return SearchedListData(
@@ -62,8 +79,7 @@ private extension ScenarioSearchStore {
                             )
                         }
                     )
-                }
-                else {
+                } else {
                     let data = SearchedListData(
                         kind: store.kind,
                         shouldHighlight: false,

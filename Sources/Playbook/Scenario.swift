@@ -14,6 +14,12 @@ public struct Scenario {
     /// A line number where defined this scenario in file.
     public var line: UInt
 
+    /// A custom timer to take the snapshot
+    public var delay: TimeInterval
+
+    /// Type of presentation when is open
+    public var presentationStyle: PresentationStyle
+
     /// A closure that make a new content with passed context.
     public var content: (ScenarioContext) -> UIViewController
 
@@ -22,18 +28,24 @@ public struct Scenario {
     /// - Parameters:
     ///   - name: A unique name of this scenario.
     ///   - layout: Represents how the component should be laid out.
+    ///   - presentationStyle: Type of presentation when is open.
+    ///   - delay: A custom timer to take the snapshot.
     ///   - file: A file path where defined this scenario.
     ///   - line: A line number where defined this scenario in file.
     ///   - content: A closure that make a new content with passed context.
     public init(
         _ name: ScenarioName,
         layout: ScenarioLayout,
+        presentationStyle: PresentationStyle = .modal,
+        delay: TimeInterval = 0.2,
         file: StaticString = #file,
         line: UInt = #line,
         content: @escaping (ScenarioContext) -> UIViewController
     ) {
         self.name = name
         self.layout = layout
+        self.delay = delay
+        self.presentationStyle = presentationStyle
         self.file = file
         self.line = line
         self.content = content
@@ -44,12 +56,16 @@ public struct Scenario {
     /// - Parameters:
     ///   - name: A unique name of this scenario.
     ///   - layout: Represents how the component should be laid out.
+    ///   - presentationStyle: Type of presentation when is open.
+    ///   - delay: A custom timer to take the snapshot.
     ///   - file: A file path where defined this scenario.
     ///   - line: A line number where defined this scenario in file.
     ///   - content: A closure that make a new content with passed context.
     public init(
         _ name: ScenarioName,
         layout: ScenarioLayout,
+        presentationStyle: PresentationStyle = .modal,
+        delay: TimeInterval = 0.2,
         file: StaticString = #file,
         line: UInt = #line,
         content: @escaping (ScenarioContext) -> UIView
@@ -57,6 +73,8 @@ public struct Scenario {
         self.init(
             name,
             layout: layout,
+            presentationStyle: presentationStyle,
+            delay: delay,
             file: file,
             line: line,
             content: { context in
@@ -70,12 +88,16 @@ public struct Scenario {
     /// - Parameters:
     ///   - name: A unique name of this scenario.
     ///   - layout: Represents how the component should be laid out.
+    ///   - presentationStyle: Type of presentation when is open.
+    ///   - delay: A custom timer to take the snapshot.
     ///   - file: A file path where defined this scenario.
     ///   - line: A line number where defined this scenario in file.
     ///   - content: A closure that make a new content.
     public init(
         _ name: ScenarioName,
         layout: ScenarioLayout,
+        presentationStyle: PresentationStyle = .modal,
+        delay: TimeInterval = 0.2,
         file: StaticString = #file,
         line: UInt = #line,
         content: @escaping () -> UIViewController
@@ -83,6 +105,8 @@ public struct Scenario {
         self.init(
             name,
             layout: layout,
+            presentationStyle: presentationStyle,
+            delay: delay,
             file: file,
             line: line,
             content: { _ in content() }
@@ -94,12 +118,16 @@ public struct Scenario {
     /// - Parameters:
     ///   - name: A unique name of this scenario.
     ///   - layout: Represents how the component should be laid out.
+    ///   - presentationStyle: Type of presentation when is open.
+    ///   - delay: A custom timer to take the snapshot.
     ///   - file: A file path where defined this scenario.
     ///   - line: A line number where defined this scenario in file.
     ///   - content: A closure that make a new content.
     public init(
         _ name: ScenarioName,
         layout: ScenarioLayout,
+        presentationStyle: PresentationStyle = .modal,
+        delay: TimeInterval = 0.2,
         file: StaticString = #file,
         line: UInt = #line,
         content: @escaping () -> UIView
@@ -107,12 +135,21 @@ public struct Scenario {
         self.init(
             name,
             layout: layout,
+            presentationStyle: presentationStyle,
+            delay: delay,
             file: file,
             line: line,
             content: { _ in
                 UIViewHostingController(view: content())
             }
         )
+    }
+}
+
+extension Scenario {
+    public enum PresentationStyle {
+        case modal
+        case full
     }
 }
 

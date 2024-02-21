@@ -46,6 +46,7 @@ internal extension Image {
         case rectangle = "rectangle"
         case squareAndArrowUp = "square.and.arrow.up"
         case magnifyingglass = "magnifyingglass"
+        case menu = "list.bullet"
     }
 
     init(symbol: SFSymbols) {

@@ -21,7 +21,10 @@ internal struct CatalogDrawerStyle<Content: View>: View {
     var body: some View {
         ZStack {
             content(
-                CatalogBarItem(image: Image(symbol: .magnifyingglass), insets: .only(top: 2)) {
+                CatalogBarItem(
+                    image: Image(symbol: .menu),
+                    insets: .only(top: 2)
+                ) {
                     self.store.isSearchTreeHidden = false
                 }
             )

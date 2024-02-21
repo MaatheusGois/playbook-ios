@@ -18,8 +18,22 @@ internal final class GalleryStore: ScenarioSearchStore {
         willSet { objectWillChange.send() }
     }
 
+    var openedKinds = Set<ScenarioKind>() {
+        willSet { objectWillChange.send() }
+    }
+
+    var openedSearchingKinds: Set<ScenarioKind>? {
+        willSet { objectWillChange.send() }
+    }
+
     let preSnapshotCountLimit: Int
     let snapshotLoader: SnapshotLoaderProtocol
+
+    let searchTree = ScenarioSearchTree()
+
+    var isSearchTreeHidden = true {
+        willSet { objectWillChange.send() }
+    }
 
     func prepare() {
         switch status {
@@ -44,7 +58,9 @@ internal final class GalleryStore: ScenarioSearchStore {
                 }
             }
             .prefix(preSnapshotCountLimit)
-            .forEach { snapshotLoader.takeSnapshot(for: $0.scenario, kind: $0.kind, completion: nil) }
+            .forEach {
+                snapshotLoader.takeSnapshot(for: $0.scenario, kind: $0.kind, completion: nil)
+            }
 
         return self
     }
