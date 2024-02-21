@@ -16,7 +16,7 @@ public extension Scenario {
     ///   - content: A closure that make a new content with passed context.
     init<Content: View>(
         _ name: ScenarioName,
-        layout: ScenarioLayout,
+        layout: ScenarioLayout = .fill,
         presentationStyle: PresentationStyle = .modal,
         delay: TimeInterval = 0.2,
         file: StaticString = #file,
@@ -47,7 +47,7 @@ public extension Scenario {
     ///   - content: A closure that make a new content.
     init<Content: View>(
         _ name: ScenarioName,
-        layout: ScenarioLayout,
+        layout: ScenarioLayout = .fill,
         presentationStyle: PresentationStyle = .modal,
         delay: TimeInterval = 0.2,
         file: StaticString = #file,

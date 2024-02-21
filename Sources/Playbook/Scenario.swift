@@ -36,7 +36,7 @@ public struct Scenario {
     ///   - content: A closure that make a new content with passed context.
     public init(
         _ name: ScenarioName,
-        layout: ScenarioLayout,
+        layout: ScenarioLayout = .fill,
         presentationStyle: PresentationStyle = .modal,
         delay: TimeInterval = 0.2,
         file: StaticString = #file,
@@ -64,7 +64,7 @@ public struct Scenario {
     ///   - content: A closure that make a new content with passed context.
     public init(
         _ name: ScenarioName,
-        layout: ScenarioLayout,
+        layout: ScenarioLayout = .fill,
         presentationStyle: PresentationStyle = .modal,
         delay: TimeInterval = 0.2,
         file: StaticString = #file,
@@ -96,7 +96,7 @@ public struct Scenario {
     ///   - content: A closure that make a new content.
     public init(
         _ name: ScenarioName,
-        layout: ScenarioLayout,
+        layout: ScenarioLayout = .fill,
         presentationStyle: PresentationStyle = .modal,
         delay: TimeInterval = 0.2,
         file: StaticString = #file,
@@ -126,7 +126,7 @@ public struct Scenario {
     ///   - content: A closure that make a new content.
     public init(
         _ name: ScenarioName,
-        layout: ScenarioLayout,
+        layout: ScenarioLayout = .fill,
         presentationStyle: PresentationStyle = .modal,
         delay: TimeInterval = 0.2,
         file: StaticString = #file,
