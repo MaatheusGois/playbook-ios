@@ -127,7 +127,8 @@ private extension ScenarioSearchTree {
                 }
                 .padding(.leading, 56)
             }
-        ).sheet(item: $store.selectedScenario) { data in
+        )
+        .show(style: store.selectedScenario?.scenario.presentationStyle ?? .modal, item: $store.selectedScenario) { data in
             ScenarioDisplaySheet(data: data) {
                 store.selectedScenario = nil
             }

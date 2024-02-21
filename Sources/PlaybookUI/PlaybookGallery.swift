@@ -79,7 +79,7 @@ internal struct PlaybookGalleryIOS14: View {
                         Image(symbol: .menu)
                     })
                     .background(Color(.primaryBackground).ignoresSafeArea())
-                    .sheet(item: $store.selectedScenario) { data in
+                    .show(style: store.selectedScenario?.scenario.presentationStyle ?? .modal, item: $store.selectedScenario) { data in
                         ScenarioDisplaySheet(data: data) {
                             store.selectedScenario = nil
                         }

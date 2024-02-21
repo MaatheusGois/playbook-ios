@@ -1,4 +1,5 @@
 import UIKit
+import SwiftUI
 
 /// Represents part of the component state.
 public struct Scenario {
@@ -150,6 +151,22 @@ extension Scenario {
     public enum PresentationStyle {
         case modal
         case full
+    }
+}
+
+extension View {
+    public func show<Item, Content>(
+        style: Scenario.PresentationStyle,
+        item: Binding<Item?>,
+        onDismiss: (() -> Void)? = nil,
+        @ViewBuilder content: @escaping (Item) -> Content
+    ) -> some View where Item: Identifiable, Content: View {
+        switch style {
+        case .full:
+            return AnyView(fullScreenCover(item: item, onDismiss: onDismiss, content: content))
+        case .modal:
+            return AnyView(sheet(item: item, onDismiss: onDismiss, content: content))
+        }
     }
 }
 
